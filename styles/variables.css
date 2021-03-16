@@ -1,0 +1,37 @@
+:root {
+    /* ===[Colors]=== */
+    --brand: #30bbf2;
+    --white: #ffffff;
+    --black: black;
+    --kinda-black: #23272a;
+
+    /* ===[Default Variables]=== */
+    /* Global */
+    --background: var(--white);
+    --text: var(--black);
+    
+    /* Navbar */
+    --nav-background: var(--kinda-black);
+    --nav-link: #999;
+    --nav-link-hover: var(--white);
+
+    /* Footer */
+    --footer-background: var(--white);
+    --footer-link-color: #6c757d;
+    --footer-link-color-hover: #bec0c6;
+}
+
+/* ===[Dark Theme Colors]=== */
+[data-theme="dark"] {
+    /* Global */
+    --background: #2c2f33;
+    --text: var(--white);
+
+    /* Navbar */
+    --nav-background: var(--white);
+    --nav-link: #565656;
+    --nav-link-hover: var(--black);
+    
+    /* Footer */
+    --footer-background: var(--kinda-black);
+}
