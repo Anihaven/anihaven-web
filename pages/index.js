@@ -4,15 +4,26 @@ import FooterComponent from '../components/footer'
 import NavbarComponent from '../components/navbar'
 import { Carousel } from 'react-bootstrap'
 import { useMediaQuery } from 'react-responsive'
+import {useState} from "react";
 
 export default function Home() {
     const isBigScreen = useMediaQuery({ query: '(min-width: 550px)' })
 
-    function ShowCarousel(props) {
-        const shows = [{"title": "Example 1", "short_description": "Nulla vitae elit libero, a pharetra augue mollis interdum.", "content_id": 420, "image": "/dev/Series1.png"},
-            {"title": "Example 2", "short_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", "content_id": 69, "image": "/dev/Series2.png"},
-            {"title": "Example 3", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "image": "/dev/Series3.png"}]
+    const dev_shows = [{"title": "Example 1", "short_description": "Nulla vitae elit libero, a pharetra augue mollis interdum.", "content_id": 420, "poster": "/dev/Poster1.jpg", "big_image": "/dev/Series1.png"},
+        {"title": "Example 2", "short_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", "content_id": 69, "poster": "/dev/Poster2.jpg", "big_image": "/dev/Series2.png"},
+        {"title": "Example 3", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"},
+        {"title": "Example 4", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series4.jpg"},
+        {"title": "Example 5", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"},
+        {"title": "Example 6", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"},
+        {"title": "Example 7", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"},
+        {"title": "Example 8", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"},
+        {"title": "Example 9", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"},
+        {"title": "Example 10", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"}]
 
+
+    function ShowCarousel(props) {
+        // Get currently popular shows, and newly added content from graphql (like, limit of 3-5 or smthn)
+        const shows = [dev_shows[0], dev_shows[1], dev_shows[2]]
         return (
             <div className={styles.carousel + " container-fluid p-0"}>
                 <Carousel controls={false}>
@@ -20,11 +31,13 @@ export default function Home() {
                         return (
                             <Carousel.Item>
                                 <a href={"/watch/"+value.content_id}>
-                                    <img
-                                        className="d-block"
-                                        src={value.image}
-                                        alt={value.title}
-                                    />
+                                    <div className={styles.carouselGradient}>
+                                        <img
+                                            className="d-block"
+                                            src={value.big_image}
+                                            alt={value.title}
+                                        />
+                                    </div>
                                 </a>
                                 <Carousel.Caption>
                                     <h3>{value.title}</h3>
@@ -38,37 +51,61 @@ export default function Home() {
         )
     }
 
+    function ContentList(props) {
+        // Show component
+        function Show(showElement) {
+            const [isHovered, setHovered] = useState(false)
+
+            return (
+                <div className={"d-flex justify-content-center px-1"}>
+                    <div className={styles.contentPoster + " rounded"}
+                         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+                        <a href={"/watch/"+showElement.content_id}>
+                            <div className={styles.contentPosterHover} style={isHovered ? {opacity: 100 } : {opacity: 0}}>
+                                <h5>{showElement.title}</h5>
+                                <p>{showElement.short_description}</p>
+                            </div>
+                            <img
+                                className={"d-block"}
+                                src={showElement.poster}
+                                alt={showElement.title}
+                            />
+                        </a>
+                    </div>
+                </div>
+            )
+        }
+
+        // Get shows depending on type provided (props.type) from graphql
+        const shows = dev_shows
+        return (
+            <div className={styles.websiteContent + " mt-4"}>
+                <div className={styles.contentListContainer + " container p-0"}>
+                    <div className="row"><h5 className="col-12">{props.listTitle}</h5></div>
+                    <div className={styles.contentList + " d-flex"}>
+                        {shows.map(Show)}
+                    </div>
+                    <div className={styles.contentListSpacer}/>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div>
             <HeadComponent title="Anihaven - Home"/>
 
             <NavbarComponent/>
 
-            <div className={styles.dashboardContent}>
+            <div className={styles.dashboardContentContainer}>
                 {isBigScreen && <ShowCarousel/>}
+                {/* \/ Sometimes the website bugged out, and replaced the ShowCarousel with the 30px div, so just seperated them instead of ? : */}
+                {!isBigScreen && <div style={{height: "30px"}}/>}
 
-                <main className="container py-3 mt-5">
-                    <h1>
-                        Welcome to Anihaven!
-                    </h1>
-
-                    <div>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer condimentum egestas tincidunt. Mauris volutpat gravida nunc et eleifend. Aenean ullamcorper enim eu leo sodales accumsan. Proin at accumsan tortor. Vivamus purus lorem, ornare vitae sollicitudin eu, scelerisque quis nunc. Donec lobortis placerat nulla, non sodales dui hendrerit a. Aliquam lacinia libero vitae nisl luctus luctus. Nam pulvinar malesuada ipsum in rutrum. In dictum euismod massa, at ultrices mauris laoreet laoreet. Nam sollicitudin iaculis dolor malesuada fringilla. Proin pharetra quam eget tincidunt aliquam. Ut et odio feugiat, dictum nunc eget, pretium eros. Etiam sed enim sed libero pulvinar iaculis.
-                        </p>
-                        <p>
-                            Donec eget lorem ornare, lacinia odio et, faucibus nisl. Integer eget justo non nisl sollicitudin sollicitudin. Morbi ante diam, sollicitudin id arcu non, lacinia varius nisi. Fusce tempor in leo vitae accumsan. Sed tempus est libero, et lacinia magna pellentesque non. Morbi a dui quis elit laoreet molestie eget vitae risus. Mauris tincidunt consequat neque, ac efficitur diam blandit sit amet. Aenean tincidunt eu lacus eleifend pulvinar. Ut vehicula convallis vulputate.
-                        </p>
-                        <p>
-                            Vivamus venenatis lobortis arcu ac ultricies. Suspendisse mauris enim, porta et sem id, dapibus cursus sem. Aenean suscipit nulla augue, a eleifend ipsum sodales vel. Nam at risus aliquam, pellentesque sem a, porta augue. Maecenas cursus vulputate ultrices. Ut quis mauris quam. Nulla ac velit quam. Donec scelerisque vel nunc non bibendum. Sed vitae mattis sem. Cras ultrices ante vel velit imperdiet, non malesuada lectus sollicitudin. Integer felis ante, vestibulum sit amet congue non, pulvinar eget felis.
-                        </p>
-                        <p>
-                            Sed lacinia, velit a scelerisque condimentum, elit turpis vehicula lacus, quis feugiat nulla dolor eu mauris. Phasellus eu molestie sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lobortis nibh lorem, at venenatis libero vulputate sit amet. Proin tristique turpis odio, a congue nibh laoreet at. Duis in convallis magna. Aliquam vitae ullamcorper sem. Vestibulum aliquet ultricies ex vel imperdiet. Vivamus condimentum eros vitae lorem condimentum, in consequat odio condimentum. Aliquam maximus purus in sapien imperdiet porta. Sed nec risus ex. Integer at quam vitae orci gravida finibus eu vitae tortor. Donec eu felis iaculis, rutrum risus a, egestas felis. Vestibulum condimentum scelerisque metus id tincidunt. Quisque ultrices venenatis mauris, id semper lacus auctor sit amet.
-                        </p>
-                        <p>
-                            Duis in facilisis nunc. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus rutrum ullamcorper nunc, nec euismod turpis rutrum ut. Maecenas condimentum mollis placerat. Sed molestie dui eu efficitur condimentum. Nullam id nulla magna.
-                        </p>
-                    </div>
+                <main className="container py-3">
+                    <ContentList listTitle="Popular right now" type="trending"/>
+                    <ContentList listTitle="Action" type="tag-action"/>
+                    <ContentList listTitle="Isekai" type="tag-isekai"/>
                 </main>
             </div>
 

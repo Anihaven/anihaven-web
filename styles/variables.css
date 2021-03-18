@@ -4,11 +4,15 @@
     --transparent: rgba(255,255,255,0);
     --white: #ffffff;
     --black: black;
+    --light-black: #2c2f33;
     --kinda-black: #23272a;
     --interactive-text: #6c757d;
     --interactive-text-hover: var(--black);
     --interactive-text-blackbg: #bec0c6;
     --interactive-text-blackbg-hover: var(--white);
+    --scrollbar: #f1f1f1;
+    --scrollbar-thumb: #888;
+    --scrollbar-thumb-hover: #555;
 
     /* ===[Default Variables]=== */
     /* Global */
@@ -28,12 +32,15 @@
     --footer-background: var(--white);
     --footer-link: var(--interactive-text);
     --footer-link-hover: var(--interactive-text-hover);
+
+    /* Cards on the dashboard when hovered */
+    --hover-card-background: rgba(62, 62, 62, 0.85);
 }
 
 /* ===[Dark Theme Colors]=== */
 [data-theme="dark"] {
     /* Global */
-    --background: #2c2f33;
+    --background: var(--light-black);
     --text: var(--white);
 
     /* Dashboard Gradient */
