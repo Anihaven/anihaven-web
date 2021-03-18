@@ -1,24 +1,33 @@
 :root {
     /* ===[Colors]=== */
     --brand: #30bbf2;
+    --transparent: rgba(255,255,255,0);
     --white: #ffffff;
     --black: black;
     --kinda-black: #23272a;
+    --interactive-text: #6c757d;
+    --interactive-text-hover: var(--black);
+    --interactive-text-blackbg: #bec0c6;
+    --interactive-text-blackbg-hover: var(--white);
 
     /* ===[Default Variables]=== */
     /* Global */
     --background: var(--white);
     --text: var(--black);
+
+    /* Dashboard Gradient */
+    --gradient-color-1: var(--transparent);
+    --gradient-color-2: var(--brand);
     
     /* Navbar */
     --nav-background: var(--kinda-black);
-    --nav-link: #999;
-    --nav-link-hover: var(--white);
+    --nav-link: var(--interactive-text-blackbg);
+    --nav-link-hover: var(--interactive-text-blackbg-hover);
 
     /* Footer */
     --footer-background: var(--white);
-    --footer-link-color: #6c757d;
-    --footer-link-color-hover: #bec0c6;
+    --footer-link: var(--interactive-text);
+    --footer-link-hover: var(--interactive-text-hover);
 }
 
 /* ===[Dark Theme Colors]=== */
@@ -27,11 +36,15 @@
     --background: #2c2f33;
     --text: var(--white);
 
+    /* Dashboard Gradient */
+    --gradient-color-1: var(--transparent);
+    --gradient-color-2: var(--transparent);
+
     /* Navbar */
-    --nav-background: var(--white);
-    --nav-link: #565656;
-    --nav-link-hover: var(--black);
+    /*--nav-background: var(--kinda-black);*/
     
     /* Footer */
     --footer-background: var(--kinda-black);
+    --footer-link: var(--interactive-text-blackbg);
+    --footer-link-hover: var(--interactive-text-blackbg-hover);
 }

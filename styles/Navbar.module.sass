@@ -1,8 +1,16 @@
 .navbar
   background-color: var(--nav-background)
+  position: fixed
+  z-index: 100
+  //height: 55px
+  transition: top 0.3s
   a
     color: var(--nav-link)
     transition: ease-in-out color .15s
   a:hover
     color: var(--nav-link-hover)
     text-decoration: none
+
+.navbarToggler
+  color: var(--nav-link)
+  border-color: var(--nav-link)

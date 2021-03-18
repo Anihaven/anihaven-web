@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes'
 export default function FooterComponent(props) {
     const { theme, setTheme } = useTheme()
     const ThemeChanger = props => (<input type="checkbox" className="custom-control-input" id="themeSwitch" {...props}/>)
-    const themeChangeEvent = event => (setTheme(event.target.checked ? "dark" : "light"))
+    const themeChangeEvent = event => setTheme(event.target.checked ? "dark" : "light")
 
     return (
         <footer className={styles.footer}>
@@ -12,7 +12,8 @@ export default function FooterComponent(props) {
                 <div className="row">
                     <div className="col-12 col-md">
                         <img className="d-block mb-2" width="auto" height={50} src="/favicons/favicon.svg" alt="Anihaven Logo" />
-                        <small className="d-block mb-3">&copy; 2021</small>
+                        <small className="d-block mb-1">&copy; 2021</small>
+                        <small className="d-block mb-3">Made with &hearts; by the fans, for the fans.</small>
                     </div>
                     <div className="col-6 col-md">
                         <h5>A very epic example</h5>
@@ -57,7 +58,7 @@ export default function FooterComponent(props) {
                                 checked={theme === "dark"}
                                 onChange={themeChangeEvent}
                             />
-                            <label className="custom-control-label" htmlFor="themeSwitch">{theme === "dark" ? "Dark Theme" : "Light Theme"}</label>
+                            <label className="custom-control-label" htmlFor="themeSwitch">{theme === "light" ? "Light Theme" : "Dark Theme"}</label>
                         </div>
                     </div>
                 </div>

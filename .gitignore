@@ -1,3 +1,6 @@
+# Dev static
+public/dev
+
 # Logs
 logs
 *.log
