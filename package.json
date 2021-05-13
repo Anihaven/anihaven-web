@@ -12,9 +12,11 @@
     "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.17",
     "@koa/router": "^10.0.0",
     "bootstrap": "^4.6.0",
     "cross-env": "^5.2.0",
+    "graphql": "^15.5.0",
     "jquery": "^3.6.0",
     "koa": "^2.13.0",
     "koa-proxy": "^1.0.0-alpha.3",

@@ -26,7 +26,7 @@ export default function NavbarComponent(props) {
     return (
         <Navbar collapseOnSelect expand="md" variant="none" className={styles.navbar+" container-fluid"} style={{top: visible ? '0' : '-55px'}}>
             <div className="container">
-                <Navbar.Brand href="#">
+                <Navbar.Brand href="/">
                     <img
                         src="/favicons/favicon.svg"
                         width="auto"
