@@ -22,7 +22,7 @@ export default function Home() {
     //     {"title": "Example 10", "short_description": "Praesent commodo cursus magna, vel scelerisque nisl consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur.", "content_id": 360, "poster": "/dev/Poster3.png", "big_image": "/dev/Series3.png"}]
 
     return (
-        <div>
+        <>
             <HeadComponent title="Anihaven - Home"/>
 
             <NavbarComponent/>
@@ -46,6 +46,6 @@ export default function Home() {
             </div>
 
             <FooterComponent/>
-        </div>
+        </>
     )
 }

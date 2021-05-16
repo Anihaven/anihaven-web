@@ -1,5 +1,6 @@
 import styles from '../styles/Footer.module.sass'
 import { useTheme } from 'next-themes'
+import {Button} from "react-bootstrap";
 
 export default function FooterComponent(props) {
     const { theme, setTheme } = useTheme()
@@ -58,7 +59,7 @@ export default function FooterComponent(props) {
                                 checked={theme === "dark"}
                                 onChange={themeChangeEvent}
                             />
-                            <label className="custom-control-label" htmlFor="themeSwitch">{theme === "light" ? "Light Theme" : "Dark Theme"}</label>
+                            <label className={"custom-control-label " + styles.themeToggler} htmlFor="themeSwitch">{theme === "light" ? "Light Theme" : "Dark Theme"}</label>
                         </div>
                     </div>
                 </div>

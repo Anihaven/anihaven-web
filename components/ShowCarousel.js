@@ -6,7 +6,7 @@ export default function ShowCarousel(props) {
     // Get currently popular shows, and newly added content from graphql (like, limit of 3-5 or smthn)
     const show_query = gql`
         query getCarouselContent {
-            getAllContent {
+            content {
                 titleId
                 shortdescription
                 banner {
@@ -34,7 +34,31 @@ export default function ShowCarousel(props) {
     const { data, loading, error } = useQuery(show_query)
 
     if (loading) {
-        return <h2>Loading...</h2>
+        const testShows = [1, 2, 3]
+        return (
+            <div className={styles.carousel + " container-fluid p-0"}>
+                <Carousel controls={false}>
+                    {testShows.map(function(show) {
+                        let bannerURL = "/assets/missing_banner.svg"
+                        return (
+                            <Carousel.Item key={show}>
+                                <div className={styles.carouselGradient}>
+                                    <img
+                                        className="d-block"
+                                        src={bannerURL}
+                                        alt="Loading..."
+                                    />
+                                </div>
+                                {/*<Carousel.Caption>*/}
+                                {/*    <h3>{show.title.english}</h3>*/}
+                                {/*    <p>{show.shortdescription}</p>*/}
+                                {/*</Carousel.Caption>*/}
+                            </Carousel.Item>
+                        )
+                    })}
+                </Carousel>
+            </div>
+        )
     }
 
     if (error) {
@@ -42,7 +66,7 @@ export default function ShowCarousel(props) {
         return null
     }
 
-    const shows = data.getAllContent.slice(0, 4)
+    const shows = data.content.slice(0, 4)
     console.log(shows)
     //ddd
 
@@ -55,7 +79,7 @@ export default function ShowCarousel(props) {
                         bannerURL = show.banner.url
                     }
                     return (
-                        <Carousel.Item>
+                        <Carousel.Item key={show.titleId}>
                             <a href={"/content/"+show.titleId}>
                                 <div className={styles.carouselGradient}>
                                     <img

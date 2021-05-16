@@ -10,7 +10,7 @@ export default function Content() {
     const { titleId } = router.query
 
     return (
-        <div>
+        <>
             <HeadComponent title="Anihaven - Content Loading..."/>
 
             <NavbarComponent/>
@@ -20,6 +20,6 @@ export default function Content() {
             </ClientOnly>
 
             <FooterComponent/>
-        </div>
+        </>
     )
 }
