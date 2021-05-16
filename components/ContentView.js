@@ -1,8 +1,9 @@
 import { gql, useQuery } from "@apollo/client"
 import styles from "../styles/ContentView.module.sass"
 import { useRouter } from "next/router"
-import { useState, useEffect } from "react"
-import Player from './Player'
+import { useState, useEffect, useCallback } from "react"
+import videojs from 'video.js'
+import 'videojs-youtube'
 
 
 export default function ContentView(props) {
@@ -13,6 +14,7 @@ export default function ContentView(props) {
         return { query }
     }
 
+    // Effect to load a video on page load, if you load the page with a watchId (?watch=3)
     useEffect(() => {
         console.log("useEffect")
         if (!isWatching) {
@@ -50,6 +52,38 @@ export default function ContentView(props) {
         }
     }, [props.titleId, router.query.watch, document.getElementsByClassName(styles.videoPlayer)[0]])
 
+    // Video player hooks
+    const [videoElement, setVideoElement] = useState(null)
+    const onVideo = useCallback((elem) => {
+        console.log("Setting video element: ", elem)
+        setVideoElement(elem)
+    }, [])
+
+    let videoJsOptions = {
+        techOrder: ['youtube'],
+        autoplay: false,
+        controls: true,
+        fluid: true,
+        sources: [
+            {
+                src: 'https://www.youtube.com/watch?v=IxQB14xVas0',
+                type: 'video/youtube',
+            },
+        ],
+    }
+
+    // Listen to new video elements and props
+    useEffect(() => {
+        console.log("video.js onEffect")
+        console.log(videoElement.innerHTML)
+        console.log(videoJsOptions)
+        if (!videoElement) return
+        const player = videojs(videoElement, videoJsOptions)
+        return () => {
+            player.dispose()
+        }
+    }, [videoJsOptions, videoElement])
+
     // Watch video function
     function watchVideo(videoId) {
         setIsWatching(true)
@@ -66,26 +100,21 @@ export default function ContentView(props) {
             let videoPlayer = document.getElementsByClassName(styles.videoPlayer)[0]
             if (videoPlayer) {
                 console.log("Video player found")
-                // const videoJsOptions = {
-                //     techOrder: ['youtube'],
-                //     autoplay: true,
-                //     controls: true,
-                //     sources: [
-                //         {
-                //             src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                //             type: 'video/youtube',
-                //         },
-                //     ],
-                // }
+                videoJsOptions.sources = [
+                        {
+                            src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                            type: 'video/youtube',
+                        },
+                    ]
                 // const player = Player({...videoJsOptions})
 
-                let player = document.createElement("iframe")
-                player.className = "embed-responsive-item"
-                player.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1"
-                player.allowFullscreen
-
-                console.log("adding video player")
-                videoPlayer.appendChild(player)
+                // let player = document.createElement("iframe")
+                // player.className = "embed-responsive-item"
+                // player.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1"
+                // player.allowFullscreen
+                //
+                // console.log("adding video player")
+                // videoPlayer.appendChild(player)
             }
 
         }
@@ -310,6 +339,9 @@ export default function ContentView(props) {
                     <button className={styles.videoExitButton} onClick={stopWatching}>Exit</button>
                     <div className={styles.videoPlayer + " embed-responsive embed-responsive-16by9"}>
                         {/*<iframe className="embed-responsive-item" src={contentSource} allowFullScreen/>*/}
+                        <div data-vjs-player>
+                            <video ref={onVideo} className="video-js" playsInline/>
+                        </div>
                     </div>
                 </div>
             </div>
