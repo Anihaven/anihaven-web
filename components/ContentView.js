@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import videojs from 'video.js'
 import 'videojs-youtube'
 import 'video.js/dist/video-js.css'
+import {Nav} from "react-bootstrap";
 
 
 export default function ContentView(props) {
@@ -96,10 +97,18 @@ export default function ContentView(props) {
     const [getVideo, { loading: videoLoading, data: videoData }] = useLazyQuery(VIDEO_QUERY)
 
     function addVideoPlayer() {
+        console.log("addVideoPlayer")
+        console.log(isWatching)
+        if (!isWatching) {
+            console.log("Is not watching, returning")
+            return
+        }
+
         // Remove old player
         stopPlaying()
 
         // Add new
+        console.log("Adding new video player")
         if (videoData && videoData.video && videoData.video[0]) {
             const video = videoData.video[0]
             // Default techorder and sources
@@ -192,26 +201,31 @@ export default function ContentView(props) {
     useEffect(() => {
         console.log("VideoFetch Effect - Video:", videoData)
         addVideoPlayer()
-    }, [videoData, videoLoading])
+    }, [videoData, videoLoading, isWatching])
 
     // Watch video function
     function watchVideo(videoId) {
+        console.log("watchVideo")
+        console.log(isWatching)
         setIsWatching(true)
+        console.log(isWatching)
 
         console.log("router push: " + videoId.toString())
         router.push("/content/[titleId]?watch=" + videoId.toString(),
             "/content/" + props.titleId + "?watch=" + videoId.toString(),
             {shallow: true}).then(r => console.log("Router push:", r))
+        console.log(isWatching)
 
         // Get content source
-        console.log("get video")
+        console.log("getVideo")
         getVideo({
-            variables: {videoId: videoId}, onCompleted({data}) {
+            variables: { videoId: videoId }, onCompleted({data}) {
                 console.log("completed")
                 const video = data.video.slice(0, 4)
                 console.log(video)
             }
         })
+        console.log(isWatching)
 
         if (videoData) {
             addVideoPlayer()
@@ -226,7 +240,7 @@ export default function ContentView(props) {
 
     // Clear the player
     function stopPlaying() {
-        console.log("stop playing")
+        console.log("stopPlaying")
 
         // remove the video player
         try {
@@ -239,7 +253,7 @@ export default function ContentView(props) {
             }
         }
         catch (e) {
-            console.log(e)
+            console.log("ignore:", e)
         }
         try {
             const player = videojs(document.getElementsByClassName(styles.videoJSPlayer)[0])
@@ -251,7 +265,7 @@ export default function ContentView(props) {
             }
         }
         catch (e) {
-            console.log(e)
+            console.log("ignore:", e)
         }
 
         // Check if the video player stuff is still there even after disposal
@@ -385,6 +399,14 @@ export default function ContentView(props) {
             background_banner = show.banner.url
         }
 
+        // Function to use in Play button.
+        // Should grab next video that the user hasn't watched, and play it
+        function playContent() {
+            if (show.videos && show.videos.length > 0) {
+                watchVideo(show.videos[0].id)
+            }
+        }
+
         const showVideos = (show && (show.format !== "MOVIE"))
 
         return (
@@ -401,7 +423,14 @@ export default function ContentView(props) {
                             </div>
                             <div className={styles.contentButtons}>
                                 {/* Some kind of function to check the user for played videos, and play the next/resume from last played */}
-                                <button>Play</button>
+                                <button onClick={playContent} type="button" className={styles.contentPlayButton + " btn"}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         className="bi bi-play-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                    </svg>
+                                    <span className="pl-1">Play</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -436,8 +465,18 @@ export default function ContentView(props) {
 
                             return (
                                 <div className={styles.contentVideo} key={video.id}>
-                                    <div className={styles.contentThumbnail}>
+                                    <div className={styles.contentThumbnail + " rounded"}>
+                                        {/* TODO */}
+                                        {/* Add a tabindex to the videos for accessibility, don't know how yet. The tabindex works, and can add highlight, but enter does nothing */}
                                         <a onClick={() => {return watchVideo(video.id)}}>
+                                            {/*<span className={styles.thumbnailPlayButton + " glyphicon glyphicon-play-circle"} aria-hidden="true"/>*/}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" className={styles.thumbnailPlayButton + " bi bi-play-circle"} viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path
+                                                    d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+                                            </svg>
                                             <img src={thumbnail} alt={episodeTitle}/>
                                         </a>
                                     </div>
@@ -467,7 +506,14 @@ export default function ContentView(props) {
         <div className={styles.contentViewContainer + " container-fluid p-0"}>
             <div style={{display: isWatching ? "flex" : "none"}} className={styles.videoPlayerContainer + " justify-content-center align-items-center"}>
                 <div className={styles.videoPlayerInnerContainer + " col-md-10"}>
-                    <button className={styles.videoExitButton} onClick={stopWatching}>Exit</button>
+                    <button className={styles.videoExitButton + " btn"} onClick={stopWatching}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             className="bi bi-x-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
                     <div className={styles.videoPlayer + " embed-responsive"}>
                         {/*<iframe className="embed-responsive-item" src={contentSource} allowFullScreen/>*/}
                         <div className={styles.videoJSPlayer} data-vjs-player>

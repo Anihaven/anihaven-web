@@ -1,4 +1,5 @@
 @import "~bootstrap/scss/bootstrap"
+@import "~bootstrap-icons/font/bootstrap-icons.css"
 
 html, body
   background-color: var(--background)
@@ -13,9 +14,18 @@ html, body
   -moz-user-select: none /* Old versions of Firefox */
   -ms-user-select: none /* Internet Explorer/Edge */
   user-select: none /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  a
+    color: var(--interactive-text)
+    text-decoration: none
+    &:hover
+      color: var(--interactive-text-hover)
+      text-decoration: none
 
-body
+body, #__next
   min-height: 100vh
+  display: flex
+  flex-direction: column
+  justify-content: space-between
 
 ::-webkit-scrollbar
   width: 8px

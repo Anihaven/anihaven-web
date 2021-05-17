@@ -4,7 +4,7 @@ import HeadComponent from "../components/head"
 import NavbarComponent from "../components/navbar"
 import FooterComponent from "../components/footer"
 
-export default function Content() {
+export default function Browse() {
     const router = useRouter()
 
     const hasMounted = useHasMounted()
@@ -13,23 +13,30 @@ export default function Content() {
         return null
     }
 
-    Content.getInitialProps = ({ query }) => {
+    Browse.getInitialProps = ({ query }) => {
         return { query }
     }
 
     console.log(router.query)
-    const { type } = router.query
-    console.log(type)
+    const { type, search } = router.query
+    console.log("type:", type)
+    console.log("search:", search)
 
-    if (!type) {
-        return null
-    }
+    // if (!type) {
+    //     return null
+    // }
 
     return (
         <>
             <HeadComponent title="Anihaven - Browse Content"/>
 
             <NavbarComponent/>
+
+            <div className="container pt-2">
+                <div className="pt-5">
+                    <h1>Under construction...</h1>
+                </div>
+            </div>
 
             <FooterComponent/>
         </>

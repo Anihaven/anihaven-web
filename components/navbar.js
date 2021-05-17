@@ -23,6 +23,11 @@ export default function NavbarComponent(props) {
 
     }, [prevScrollPos, visible, handleScroll])
 
+    function search(event) {
+        const form = event.currentTarget
+        console.log(form)
+    }
+
     return (
         <Navbar collapseOnSelect expand="md" variant="none" className={styles.navbar+" container-fluid"} style={{top: visible ? '0' : '-55px'}}>
             <div className="container">
@@ -38,14 +43,14 @@ export default function NavbarComponent(props) {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" className={styles.navbarToggler + " navbar-dark"} />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="/browse?type=series">Series</Nav.Link>
-                        <Nav.Link href="/browse?type=movies">Movies</Nav.Link>
-                        <Nav.Link href="/subscriptions">Subscriptions</Nav.Link>
+                        <Nav.Link href="/browse?type=series" tabIndex="0">Series</Nav.Link>
+                        <Nav.Link href="/browse?type=movies" tabIndex="0">Movies</Nav.Link>
+                        <Nav.Link href="/subscriptions" tabIndex="0">Subscriptions</Nav.Link>
                     </Nav>
                     {/* Will replace search with a search button, which opens up a search modal - kinda like AniList */}
-                    <Form inline>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                        <Button variant="outline-info">Search</Button>
+                    <Form inline action="/browse">
+                        <FormControl type="text" name="search" placeholder="Search" className="mr-sm-2" />
+                        <Button type="submit" className={styles.searchButton}>Search</Button>
                     </Form>
                 </Navbar.Collapse>
             </div>

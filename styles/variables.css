@@ -1,6 +1,7 @@
 :root {
     /* ===[Colors]=== */
     --brand: #30bbf2;
+    --brand-darker: #09b1e8;
     --transparent: rgba(255,255,255,0);
     --white: #ffffff;
     --black: black;
@@ -35,6 +36,11 @@
 
     /* Cards on the dashboard when hovered */
     --hover-card-background: rgba(62, 62, 62, 0.85);
+
+    /* Content View and Video Thumbnails */
+    --video-title-text: var(--text);
+    --video-episode-text: hsla(0,0%,0%,.45);
+    --video-play-button: hsla(0,0%,0%,.80);
 }
 
 /* ===[Dark Theme Colors]=== */
@@ -54,4 +60,7 @@
     --footer-background: var(--kinda-black);
     --footer-link: var(--interactive-text-blackbg);
     --footer-link-hover: var(--interactive-text-blackbg-hover);
+
+    /* Content View and Video Thumbnails */
+    --video-episode-text: hsla(0,0%,100%,.45);
 }
