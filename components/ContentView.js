@@ -1,9 +1,10 @@
-import { gql, useQuery } from "@apollo/client"
+import { gql, useQuery, useLazyQuery  } from "@apollo/client"
 import styles from "../styles/ContentView.module.sass"
 import { useRouter } from "next/router"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import videojs from 'video.js'
 import 'videojs-youtube'
+import 'video.js/dist/video-js.css'
 
 
 export default function ContentView(props) {
@@ -39,7 +40,7 @@ export default function ContentView(props) {
             console.log("titleId:", props.titleId)
             console.log("query.watch:", watch)
             console.log("videoPlayer:", document.getElementsByClassName(styles.videoPlayer)[0])
-            console.log(document.body.innerHTML.toString())
+            // console.log(document.body.innerHTML.toString())
 
             if (watch !== undefined) {
                 console.log("not undefined")
@@ -52,37 +53,146 @@ export default function ContentView(props) {
         }
     }, [props.titleId, router.query.watch, document.getElementsByClassName(styles.videoPlayer)[0]])
 
-    // Video player hooks
-    const [videoElement, setVideoElement] = useState(null)
-    const onVideo = useCallback((elem) => {
-        console.log("Setting video element: ", elem)
-        setVideoElement(elem)
-    }, [])
-
+    // Video player options
     let videoJsOptions = {
+        id: "player",
         techOrder: ['youtube'],
-        autoplay: false,
+        autoplay: true,
         controls: true,
         fluid: true,
+        preload: "auto",
         sources: [
             {
-                src: 'https://www.youtube.com/watch?v=IxQB14xVas0',
-                type: 'video/youtube',
-            },
-        ],
+                src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                type: 'video/youtube'
+            }
+        ]
     }
 
     // Listen to new video elements and props
-    useEffect(() => {
-        console.log("video.js onEffect")
-        console.log(videoElement.innerHTML)
-        console.log(videoJsOptions)
-        if (!videoElement) return
-        const player = videojs(videoElement, videoJsOptions)
-        return () => {
-            player.dispose()
+    // useEffect(() => {
+    //     console.log("video.js onEffect")
+    //     // console.log(videoElement.innerHTML)
+    //     console.log(videoJsOptions)
+    //     if (!videoElement) return
+    //     const player = videojs(videoElement, videoJsOptions)
+    //     return () => {
+    //         player.dispose()
+    //     }
+    // }, [videoJsOptions, videoElement])
+
+    // Future query to fetch a video
+    const VIDEO_QUERY = gql`
+        query getVideoStorage($videoId: ID!) {
+            video(id: $videoId) {
+                id
+                videostorage {
+                    format
+                    url
+                }
+            }
         }
-    }, [videoJsOptions, videoElement])
+    `
+    const [getVideo, { loading: videoLoading, data: videoData }] = useLazyQuery(VIDEO_QUERY)
+
+    function addVideoPlayer() {
+        // Remove old player
+        stopPlaying()
+
+        // Add new
+        if (videoData && videoData.video && videoData.video[0]) {
+            const video = videoData.video[0]
+            // Default techorder and sources
+            let techOrder = ['youtube']
+            let sources = [
+                {
+                    src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                    type: 'video/youtube'
+                }
+            ]
+
+            // Parse new sources, if any
+            if (video.videostorage && video.videostorage.length > 0) {
+                console.log("has storage")
+                techOrder = []
+                sources = []
+                video.videostorage.map((videoStore) => {
+                    switch (videoStore.format) {
+                        case "mp4":
+                            techOrder.push("html5")
+                            sources.push({src: videoStore.url, type: "video/mp4"})
+                            break
+                        default:
+                            console.log("shit, format not in format switch")
+                            break
+                    }
+                })
+            }
+            else {
+                console.log("video has no storage")
+            }
+
+            // Add the video player
+            console.log("Adding video player")
+            if (document) {
+                console.log("Document found")
+                let videoPlayer = document.getElementsByClassName(styles.videoPlayer)[0]
+                if (videoPlayer) {
+                    console.log("Video player container found")
+                    let vjsPlayer = videoPlayer.getElementsByClassName(styles.videoJSPlayer)[0]
+                    if (!vjsPlayer) {
+                        console.log("no vjs player, creating")
+                        vjsPlayer = document.createElement("div")
+                        vjsPlayer.setAttribute("data-vjs-player", "")
+                        vjsPlayer.setAttribute("key", video.id)
+                        vjsPlayer.className = styles.videoJSPlayer
+
+                        videoPlayer.appendChild(vjsPlayer)
+                    }
+
+                    if (vjsPlayer) {
+                        console.log("vjsPlayer found")
+
+                        videoJsOptions.techOrder = techOrder
+                        videoJsOptions.sources = sources
+                        videoJsOptions.id = video.id
+
+                        console.log(videoJsOptions)
+
+                        let playerElem = document.createElement("video")
+                        playerElem.className = styles.videoJSPlayer + " video-js vjs-default-skin vjs-big-play-centered"
+                        playerElem.playsInline
+
+                        // const player = Player({...videoJsOptions})
+
+                        // let player = document.createElement("iframe")
+                        // player.className = "embed-responsive-item"
+                        // player.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1"
+                        // player.allowFullscreen
+                        //
+                        if (!playerElem) return
+
+                        console.log(playerElem)
+
+                        console.log("adding video player")
+                        vjsPlayer.appendChild(playerElem)
+
+
+                        // Start playing
+                        const player = videojs(playerElem, videoJsOptions)
+                    } else {
+                        console.log("no vjsplayer")
+                    }
+                }
+
+            }
+        }
+    }
+
+    useEffect(() => {
+        console.log("VideoFetch Effect - Video:", videoData)
+        addVideoPlayer()
+    }, [videoData, videoLoading])
 
     // Watch video function
     function watchVideo(videoId) {
@@ -91,36 +201,64 @@ export default function ContentView(props) {
         console.log("router push: " + videoId.toString())
         router.push("/content/[titleId]?watch=" + videoId.toString(),
             "/content/" + props.titleId + "?watch=" + videoId.toString(),
-            { shallow: true }).then(r => console.log("Router push:", r))
+            {shallow: true}).then(r => console.log("Router push:", r))
 
-        // Add the video player
-        console.log("Adding video player")
-        if (document) {
-            console.log("Document found")
-            let videoPlayer = document.getElementsByClassName(styles.videoPlayer)[0]
-            if (videoPlayer) {
-                console.log("Video player found")
-                videoJsOptions.sources = [
-                        {
-                            src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                            type: 'video/youtube',
-                        },
-                    ]
-                // const player = Player({...videoJsOptions})
-
-                // let player = document.createElement("iframe")
-                // player.className = "embed-responsive-item"
-                // player.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1"
-                // player.allowFullscreen
-                //
-                // console.log("adding video player")
-                // videoPlayer.appendChild(player)
+        // Get content source
+        console.log("get video")
+        getVideo({
+            variables: {videoId: videoId}, onCompleted({data}) {
+                console.log("completed")
+                const video = data.video.slice(0, 4)
+                console.log(video)
             }
+        })
 
+        if (videoData) {
+            addVideoPlayer()
         }
+
+        console.log("videoLoading:", videoLoading)
+        console.log("videoData:", videoData)
 
         // Return false to avoid page refresh
         return false
+    }
+
+    // Clear the player
+    function stopPlaying() {
+        console.log("stop playing")
+
+        // remove the video player
+        try {
+            const player = videojs(videoJsOptions.id)
+            console.log(player)
+            if (player) {
+                console.log("player found for stopping")
+                player.dispose()
+                console.log(player)
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+        try {
+            const player = videojs(document.getElementsByClassName(styles.videoJSPlayer)[0])
+            console.log(player)
+            if (player) {
+                console.log("player found for stopping in elements")
+                player.dispose()
+                console.log(player)
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+
+        // Check if the video player stuff is still there even after disposal
+        let videoPlayer = document.getElementsByClassName(styles.videoPlayer)[0]
+        if (videoPlayer && videoPlayer.innerHTML) {
+            videoPlayer.innerHTML = ""
+        }
     }
 
     // Function called when user wants to stop watching, by clicking the exit button
@@ -128,12 +266,7 @@ export default function ContentView(props) {
         console.log("stop watching")
 
         // remove the video player
-        if (document) {
-            let videoPlayer = document.getElementsByClassName(styles.videoPlayer)[0]
-            if (videoPlayer) {
-                videoPlayer.innerHTML = ""
-            }
-        }
+        stopPlaying()
 
         // set the query watch to undefined, otherwise it won't disappear on first rerender
         router.query.watch = undefined
@@ -146,7 +279,7 @@ export default function ContentView(props) {
     }
 
     function Content() {
-        const show_query = gql`
+        const SHOW_QUERY = gql`
             query getContentPageContent($titleId: String!) {
                 content(titleId: $titleId) {
                     description
@@ -176,19 +309,17 @@ export default function ContentView(props) {
             }
         `
 
-        const variables = {
-            titleId: props.titleId
-        }
-
-        console.log("ContentView")
-
         let background_banner = "/assets/missing_banner.svg"
 
-        const { data, loading, error } = useQuery(show_query, {
-            variables: variables
+        // Query to fetch a show
+        const { data: showData, loading: showLoading, error: showError } = useQuery(SHOW_QUERY, {
+            variables: {
+                titleId: props.titleId
+            }
         })
 
-        if (loading) {
+        if (showLoading) {
+            console.log("Fetching show data...")
             const videos = [1, 2, 3, 4, 5]
             return (
                 <>
@@ -225,19 +356,19 @@ export default function ContentView(props) {
             )
         }
 
-        if (error) {
-            console.error(error)
+        if (showError) {
+            console.error(showError)
             return null
         }
 
-        console.log(data)
+        console.log(showData)
 
-        if (!data) {
+        if (!showData) {
             console.log("no data")
             return null
         }
 
-        const show = data.content[0]
+        const show = showData.content[0]
 
         if (!show) {
             console.log("No show found")
@@ -337,10 +468,10 @@ export default function ContentView(props) {
             <div style={{display: isWatching ? "flex" : "none"}} className={styles.videoPlayerContainer + " justify-content-center align-items-center"}>
                 <div className={styles.videoPlayerInnerContainer + " col-md-10"}>
                     <button className={styles.videoExitButton} onClick={stopWatching}>Exit</button>
-                    <div className={styles.videoPlayer + " embed-responsive embed-responsive-16by9"}>
+                    <div className={styles.videoPlayer + " embed-responsive"}>
                         {/*<iframe className="embed-responsive-item" src={contentSource} allowFullScreen/>*/}
-                        <div data-vjs-player>
-                            <video ref={onVideo} className="video-js" playsInline/>
+                        <div className={styles.videoJSPlayer} data-vjs-player>
+                            <video id="player"/>
                         </div>
                     </div>
                 </div>

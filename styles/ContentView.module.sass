@@ -30,9 +30,16 @@
       top: 0
       bottom: 0
       width: 90%
+      // Need max-width, since we with the padding-top (aspect ratio) can have it scale infinitely on height
+      max-width: 1000px
       //background-color: white
       //&::before
       //  padding-top: 56.25%
+      .videoJSPlayer
+        position: relative
+        padding-top: 56.25%
+        //height: 56.25vw
+        //padding-top: unset
 
 .contentVideosContainer, .contentInformationContainer
   position: relative
