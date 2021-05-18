@@ -505,7 +505,16 @@ export default function ContentView(props) {
     return (
         <div className={styles.contentViewContainer + " container-fluid p-0"}>
             <div style={{display: isWatching ? "flex" : "none"}} className={styles.videoPlayerContainer + " justify-content-center align-items-center"}>
-                <div className={styles.videoPlayerInnerContainer + " col-md-10"}>
+                <div className="col"/>
+                <div className={styles.videoPlayerInnerContainer + " col-8"}>
+                    <div className={styles.videoPlayer + " embed-responsive"}>
+                        {/*<iframe className="embed-responsive-item" src={contentSource} allowFullScreen/>*/}
+                        <div className={styles.videoJSPlayer} data-vjs-player>
+                            <video id="player"/>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.videoExitButtonContainer + " col"}>
                     <button className={styles.videoExitButton + " btn"} onClick={stopWatching}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              className="bi bi-x-circle" viewBox="0 0 16 16">
@@ -514,12 +523,6 @@ export default function ContentView(props) {
                                 d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                         </svg>
                     </button>
-                    <div className={styles.videoPlayer + " embed-responsive"}>
-                        {/*<iframe className="embed-responsive-item" src={contentSource} allowFullScreen/>*/}
-                        <div className={styles.videoJSPlayer} data-vjs-player>
-                            <video id="player"/>
-                        </div>
-                    </div>
                 </div>
             </div>
 
