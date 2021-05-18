@@ -107,13 +107,21 @@
     cursor: pointer
   .contentThumbnail
     // We take video aspect ratio (16:9)
-    height: 196px
-    width: (196px*(16/9))
+    height: 35vw*(9/16)
+    width: 35vw
+    max-height: 196px
+    max-width: (196px*(16/9))
     object-fit: cover
     overflow: hidden
     text-align: center
     position: relative
+    //display: flex
+    //justify-content: center
+    //align-items: center
     z-index: 1
+    // Border style - the border is hidden
+    border-color: var(--brand)
+    border-radius: 5px
 
     // Smooth transitions
     -webkit-transition: all 0.2s ease-in
@@ -123,25 +131,21 @@
     transition: all 0.2s ease-in
     &:hover
       //box-shadow: 0px 0px 26px 8px rgba(0, 0, 0, 0.50)
+      // Add the border
+      border-style: solid
 
       .thumbnailPlayButton
         opacity: 100
-
-      img
-        // Add the border
-        border-style: solid
     img
       height: 100%
-      width: auto
+      width: 100%
+      object-fit: cover
       margin: auto
       position: absolute
       z-index: 1
       left: 50%
       top: 50%
       -webkit-transform: translateY(-50%) translateX(-50%)
-      // Border style - the border is hidden
-      border-color: var(--brand)
-      border-radius: 5px
     .thumbnailPlayButton
       opacity: 0
       color: var(--video-play-button)

@@ -12,13 +12,7 @@ export default function ShowCarousel(props) {
                 titleId
                 shortdescription
                 banner {
-                    id
-                    format
-                    type
-                    storage {
-                        name
-                        endpoint
-                    }
+                    url
                 }
                 title {
                     english

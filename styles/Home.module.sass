@@ -46,6 +46,7 @@
   // We want to be able to scroll through the catalog
   overflow-y: scroll
   // Hide that ugly scrollbar, ew
+  scrollbar-width: none // Firefox
   &::-webkit-scrollbar
     width: 0
     background: transparent
@@ -53,82 +54,3 @@
     background: transparent
   &::-webkit-scrollbar-track
     background: transparent
-
-.contentPoster
-  // Poster aspect ratio is roughly 2:3
-  width: 190px
-  height: (190px/2*3)
-  object-fit: cover
-  overflow: hidden
-  text-align: center
-  position: relative
-  z-index: 1
-  // Border style - it is hidden
-  border-color: var(--brand)
-  border-radius: 5px
-
-  // Add transitions
-  -webkit-transition: all 0.2s ease-in
-  -moz-transition: all 0.2s ease-in
-  -ms-transition: all 0.2s ease-in
-  -o-transition: all 0.2s ease-in
-  transition: all 0.2s ease-in
-  &:hover
-    // It looked weird making them bigger when hovered
-    //width: 200px
-    //height: (200px/2*3)
-
-    // Add the border
-    border-style: solid
-
-    // Add a shadow
-    //box-shadow: 0px 0px 26px 10px rgba(0, 0, 0, 0.50)
-
-    // Increase opacity of posterHover
-    .contentPosterHover
-      opacity: 100
-  img
-    height: 100%
-    width: auto
-    margin: auto
-    position: absolute
-    z-index: 1
-    left: 50%
-    top: 50%
-    -webkit-transform: translateY(-50%) translateX(-50%)
-  // The stuff when we hover some content - show title, description, possibly author - stuff like that
-  div.contentPosterHover
-    position: absolute
-    background-color: var(--hover-card-background)
-    opacity: 0
-    text-align: left
-    padding: 10px
-    z-index: 2
-    bottom: 0
-    width: 100%
-    min-height: 20%
-    max-height: 60%
-    -webkit-transition: all 0.2s ease-in
-    -moz-transition: all 0.2s ease-in
-    -ms-transition: all 0.2s ease-in
-    -o-transition: all 0.2s ease-in
-    transition: all 0.2s ease-in
-    overflow-y: scroll
-    overflow-x: hidden
-    // Always show the hover information on small devices
-    @media (max-width: 550px)
-      opacity: 100
-    // Hide that ugly scrollbar, ew
-    &::-webkit-scrollbar
-      width: 0
-      background: transparent
-    &::-webkit-scrollbar-thumb
-      background: transparent
-    &::-webkit-scrollbar-track
-      background: transparent
-  // Link formatting applied to the hover preview as well, so gotta do this
-  a
-    text-decoration: none
-    color: var(--white)
-    &:hover
-      color: var(--white)

@@ -5,7 +5,6 @@ import { useState, useEffect } from "react"
 import videojs from 'video.js'
 import 'videojs-youtube'
 import 'video.js/dist/video-js.css'
-import {Nav} from "react-bootstrap";
 
 
 export default function ContentView(props) {
@@ -87,6 +86,9 @@ export default function ContentView(props) {
         query getVideoStorage($videoId: ID!) {
             video(id: $videoId) {
                 id
+                thumbnail {
+                    url
+                }
                 videostorage {
                     format
                     url
@@ -165,6 +167,10 @@ export default function ContentView(props) {
                         videoJsOptions.techOrder = techOrder
                         videoJsOptions.sources = sources
                         videoJsOptions.id = video.id
+                        // Add thumbnail as poster while video loads
+                        if (video.thumbnail && video.thumbnail.url) {
+                            videoJsOptions.poster = video.thumbnail.url
+                        }
 
                         console.log(videoJsOptions)
 

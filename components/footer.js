@@ -1,6 +1,5 @@
 import styles from '../styles/Footer.module.sass'
 import { useTheme } from 'next-themes'
-import {Button} from "react-bootstrap";
 
 export default function FooterComponent(props) {
     const { theme, setTheme } = useTheme()
