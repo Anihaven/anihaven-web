@@ -3,6 +3,8 @@ import styles from "../styles/Home.module.sass"
 import { Carousel } from "react-bootstrap"
 
 export default function ShowCarousel(props) {
+
+
     // Get currently popular shows, and newly added content from graphql (like, limit of 3-5 or smthn)
     const show_query = gql`
         query getCarouselContent {

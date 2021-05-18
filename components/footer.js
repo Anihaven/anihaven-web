@@ -17,40 +17,32 @@ export default function FooterComponent(props) {
                         <small className="d-block mb-3">Made with &hearts; by the fans, for the fans.</small>
                     </div>
                     <div className="col-6 col-md">
-                        <h5>A very epic example</h5>
+                        <h5>Policies</h5>
                         <ul className="list-unstyled text-sm-left">
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
+                            <li><a href="/terms">Terms of Service</a></li>
+                            <li><a href="/privacy">Privacy Policy</a></li>
                         </ul>
                     </div>
                     <div className="col-6 col-md">
-                        <h5>A very epic example</h5>
+                        <h5>Open Source</h5>
                         <ul className="list-unstyled text-sm-left">
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
+                            <li><a href="https://github.com/Anihaven" target="_blank">GitHub</a></li>
+                            <li><a href="/open-source">Dependencies</a></li>
                         </ul>
                     </div>
                     <div className="col-6 col-md">
-                        <h5>A very epic example</h5>
+                        <h5>Company</h5>
                         <ul className="list-unstyled text-sm-left">
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
-                            <li><a href="#">Example link</a></li>
+                            <li><a href="/about">About</a></li>
+                            <li><a href="/about#values">Our Values</a></li>
+                            <li><a href="/about#plan">Our Vision</a></li>
                         </ul>
                     </div>
                     <div className="col-6 col-md">
-                        <h5>Contact Us</h5>
+                        <h5>Community</h5>
                         <ul className="list-unstyled text-sm-left">
                             <li><a href="https://twitter.com/AnihavenApp" target="_blank">Twitter</a></li>
-                            <li><a href="#">Discord</a></li>
+                            <li><a href="https://discord.gg/">Discord</a></li>
                         </ul>
                     </div>
                     <div className="col-6 col-md">

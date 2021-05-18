@@ -1,62 +1,12 @@
 import styles from "../styles/Home.module.sass"
 import { gql, useQuery } from "@apollo/client"
+import Poster from "./ContentPoster";
 
 export default function ContentList(props) {
-    // Show component
-    function Show(showElement) {
-        // Can break rule #1 of hooks
-        // const [isHovered, setHovered] = useState(false)
-        let poster_src = "/assets/missing_poster.svg"
-
-        if (showElement.loading) {
-            return (
-                <div className={"d-flex justify-content-center px-1"} key={showElement.id}>
-                    <div className={styles.contentPoster + " rounded"}
-                        /*onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}*/>
-                        <a>
-                            <div className={styles.contentPosterHover} /*<style={isHovered ? {opacity: 100 } : {opacity: 0}}*/>
-                                <h5/>
-                                <p/>
-                            </div>
-                            <img
-                                className={"d-block"}
-                                src={poster_src}
-                                alt="Loading..."
-                            />
-                        </a>
-                    </div>
-                </div>
-            )
-        }
-
-        if (showElement.poster && showElement.poster.url) {
-            poster_src = showElement.poster.url
-        }
-
-        return (
-            <div className={"d-flex justify-content-center px-1"} key={showElement.titleId}>
-                <div className={styles.contentPoster + " rounded"}
-                     /*onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}*/>
-                    <a href={"/content/"+showElement.titleId}>
-                        <div className={styles.contentPosterHover} /*<style={isHovered ? {opacity: 100 } : {opacity: 0}}*/>
-                            <h5>{showElement.title.english}</h5>
-                            <p>{showElement.shortdescription}</p>
-                        </div>
-                        <img
-                            className={"d-block"}
-                            src={poster_src}
-                            alt={showElement.title.english}
-                        />
-                    </a>
-                </div>
-            </div>
-        )
-    }
-
     // Get shows depending on type provided (props.type) from graphql
-    const show_query = gql`
-        query getContentListContent {
-            content {
+    const SHOW_QUERY = gql`
+        query getContentListContent($tags: [String]) {
+            content(tags: $tags) {
                 titleId
                 shortdescription
                 title {
@@ -68,14 +18,28 @@ export default function ContentList(props) {
                 studios {
                     name
                 }
-                tags
                 poster {
                     url
                 }
+                tags
             }
         }
     `
-    const { data, loading, error } = useQuery(show_query)
+
+    // Get variables
+    let variables = {}
+    if (props.type) {
+        console.log("type:", props.type)
+        if (props.type.startsWith("tag-")) {
+            const tag = props.type.replace("tag-", "")
+            variables.tags = [tag]
+        }
+    }
+    console.log(variables)
+
+    const { data, loading, error } = useQuery(SHOW_QUERY, {
+        variables: variables
+    })
 
     if (loading) {
         const fakeShows = [{id: "1", loading: true}, {id: "2", loading: true}, {id: "3", loading: true},
@@ -86,7 +50,9 @@ export default function ContentList(props) {
                 <div className={styles.contentListContainer + " container p-0"}>
                     <div className="row"><h5 className="col-12">{props.listTitle}</h5></div>
                     <div className={styles.contentList + " d-flex"}>
-                        {fakeShows.map(Show)}
+                        {fakeShows.map((show) => {
+                            return Poster({ showElement: show })
+                        })}
                     </div>
                     <div className={styles.contentListSpacer}/>
                 </div>
@@ -101,12 +67,16 @@ export default function ContentList(props) {
 
     const shows = data.content.slice(0, 4)
 
+    console.log(variables, shows)
+
     return (
         <div className={styles.websiteContent + " mt-4"}>
             <div className={styles.contentListContainer + " container p-0"}>
                 <div className="row"><h5 className="col-12">{props.listTitle}</h5></div>
                 <div className={styles.contentList + " d-flex"}>
-                    {shows.map(Show)}
+                    {shows.map((show) => {
+                        return Poster({ showElement: show })
+                    })}
                 </div>
                 <div className={styles.contentListSpacer}/>
             </div>
